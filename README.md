@@ -1,31 +1,31 @@
-############# STEP 1 CLONING REPOS
+STEP 1 CLONING REPOS
 ```bash
 cd /root
 # rm -rf /root/myk8s_prefer;
 # git clone https://github.com/darrenoshan/myk8s_prefer
 
-rm -rf /root/kubespray
+# rm -rf /root/kubespray
 git clone https://github.com/kubernetes-sigs/kubespray.git
 
 cd /root/kubespray
 git checkout release-2.29
 ```
 
-############# STEP 2 SETTING ENVIRONMET
+STEP 2 SETTING ENVIRONMET
 ```bash
 python -m venv .venv
 source .venv/bin/activate
 pip3 install -r requirements.txt
 ```
 
-############# STEP 3 MAKING MY LAB CLUSTER PREFERS
+STEP 3 MAKING MY LAB CLUSTER PREFERS
 ```bash
 
 bash /root/myk8s_prefer/update_files.sh
 
 ```
 
-############# STEP 5 - RUNNING PLAYBOOKS
+STEP 5 - RUNNING PLAYBOOKS
 ```bash
 cd /root/kubespray
 ansible -i inventory/labcluster/inventory.ini all -m ping
@@ -55,7 +55,7 @@ kubectl get pods -n kube-system | grep coredns
 ```
 
 
-# ON ETCD Node 1
+ON ETCD Node 1
 ```
 ETCDCTL_API=3 etcdctl -w table \
 --endpoints=https://127.0.0.1:2379 \

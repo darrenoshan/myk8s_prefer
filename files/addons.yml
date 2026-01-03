@@ -2,4 +2,9 @@ metrics_server_enabled: true
 metrics_server_kubelet_insecure_tls: false
 metrics_server_kubelet_preferred_address_types:
   - InternalIP
-  - Hostname
+  - InternalDNS
+metrics_server_cert_file: /etc/kubernetes/pki/metrics-server.crt
+metrics_server_key_file: /etc/kubernetes/pki/metrics-server.key
+metrics_server_ca_cert_file: /etc/kubernetes/pki/ca.crt
+metrics_server_extra_args:
+  - --kubelet-preferred-address-types=InternalIP,InternalDNS
