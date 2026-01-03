@@ -1,0 +1,3 @@
+keepalived_state: BACKUP
+keepalived_priority: 100
+lb_vip: 10.16.1.10

@@ -1,0 +1,38 @@
+# VIP
+lb_vip: 10.16.1.10
+
+# external LB
+enable_haproxy: false
+loadbalancer_apiserver_type: external
+loadbalancer_apiserver_localhost: false
+
+apiserver_loadbalancer_domain_name: kube-api.labcluster.local
+loadbalancer_apiserver:
+  address: "{{ lb_vip }}"
+  port: 6443
+
+# etcd
+external_etcd: false
+
+# DNS
+enable_external_dns: false
+coredns_replicas: 3
+
+# runtime / network
+container_manager: containerd
+kube_proxy_mode: ipvs
+download_run_once: true
+
+
+http_proxy: "http://ir.linuxmirrors.ir:8080"
+https_proxy: "http://ir.linuxmirrors.ir:8080"
+no_proxy: >-
+  localhost,127.0.0.1,
+  10.0.0.0/8,
+  192.168.0.0/16,
+  172.16.0.0/12,
+  .cluster.local,
+  .svc,
+  kube-apiserver,
+  kube-control-plane,
+  kube-node

@@ -1,0 +1,36 @@
+kubelet_tls_bootstrap: true
+kubelet_rotate_certificates: true
+
+kubelet_authentication:
+  anonymous:
+    enabled: false
+  webhook:
+    enabled: true
+
+kubelet_authorization:
+  mode: Webhook
+
+kubelet_config_extra_args:
+  serverTLSBootstrap: true
+
+
+containerd_registries:
+  "reg.labcluster.local:5000":
+    tls:
+      ca_file: "/etc/containerd/certs.d/reg.labcluster.local/ca.crt"
+
+# containerd proxy configuration
+containerd_http_proxy: "http://ir.linuxmirrors.ir:8080"
+containerd_https_proxy: "http://ir.linuxmirrors.ir:8080"
+containerd_no_proxy: >-
+  localhost,127.0.0.1,
+  10.0.0.0/8,
+  192.168.0.0/16,
+  172.16.0.0/12,
+  .cluster.local,
+  .svc,
+  kube-apiserver,
+  kube-control-plane,
+  kube-node,
+  reg.labcluster.local
+

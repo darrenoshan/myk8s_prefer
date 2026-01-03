@@ -1,0 +1,64 @@
+---
+- name: Prepare all hosts for Kubespray
+  hosts: all
+  become: true
+
+  vars:
+    k8s_sysctl_params:
+      - { name: net.bridge.bridge-nf-call-iptables,  value: 1 }
+      - { name: net.bridge.bridge-nf-call-ip6tables, value: 1 }
+      - { name: net.ipv4.ip_forward,                value: 1 }
+
+  tasks:
+    - name: Gather service facts
+      ansible.builtin.service_facts:
+
+    - name: Ensure br_netfilter module is loaded
+      ansible.builtin.modprobe:
+        name: br_netfilter
+        state: present
+
+    - name: Persist br_netfilter module
+      ansible.builtin.copy:
+        dest: /etc/modules-load.d/br_netfilter.conf
+        content: "br_netfilter\n"
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Apply sysctl params required by Kubernetes
+      ansible.posix.sysctl:
+        name: "{{ item.name }}"
+        value: "{{ item.value }}"
+        state: present
+        reload: yes
+      loop: "{{ k8s_sysctl_params }}"
+
+    - name: Disable SELinux permanently
+      ansible.posix.selinux:
+        state: disabled
+      when: ansible_facts.selinux.status is defined
+
+    - name: Set SELinux to permissive at runtime (best effort)
+      ansible.builtin.command: setenforce 0
+      when:
+        - ansible_facts.selinux.status == "enabled"
+        - ansible_facts.selinux.mode != "disabled"
+      failed_when: false
+      changed_when: false
+
+    - name: Stop and disable firewalld if present
+      ansible.builtin.service:
+        name: firewalld
+        state: stopped
+        enabled: false
+      when: "'firewalld' in ansible_facts.services"
+
+    - name: Stop and disable firewalld if present
+      ansible.builtin.systemd:
+        name: firewalld
+        state: stopped
+        enabled: false
+      when:
+        - ansible_facts.services is defined
+        - "'firewalld' in ansible_facts.services"

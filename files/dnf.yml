@@ -1,0 +1,27 @@
+---
+- name: Prepare all hosts for Kubespray
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Overwrite /etc/dnf/dnf.conf
+      ansible.builtin.copy:
+        dest: /etc/dnf/dnf.conf
+        owner: root
+        group: root
+        mode: '0644'
+        content: |
+          [main]
+          gpgcheck=1
+          installonly_limit=3
+          clean_requirements_on_remove=True
+          best=True
+          skip_if_unavailable=True
+          ip_resolve=4
+          fastestmirror=true
+          max_parallel_downloads=20
+          deltarpm=1
+          keepcache=True
+          timeout=20
+          retries=20
+          proxy=http://ir.linuxmirrors.ir:8080

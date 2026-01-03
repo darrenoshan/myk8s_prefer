@@ -1,0 +1,24 @@
+- name: setup hostnames
+  hosts: all
+  become: yes
+  tasks:
+
+    - name: Ensure FQDN hostnames in /etc/hosts
+      copy:
+        dest: /etc/hosts
+        content: |
+          127.0.0.1 localhost
+          10.16.1.11 etcd1 etcd1.labcluster.local
+          10.16.1.12 etcd2 etcd2.labcluster.local
+          10.16.1.13 etcd3 etcd3.labcluster.local
+          10.16.1.14 master1 master1.labcluster.local
+          10.16.1.15 master2 master2.labcluster.local
+          10.16.1.16 master3 master3.labcluster.local
+          10.16.1.17 worker1 worker1.labcluster.local
+          10.16.1.18 worker2 worker2.labcluster.local
+          10.16.1.19 worker3 worker3.labcluster.local
+          10.16.1.10 kube-api.labcluster.local
+
+    - name: Set FQDN hostname
+      hostname:
+        name: "{{ inventory_hostname }}.labcluster.local"

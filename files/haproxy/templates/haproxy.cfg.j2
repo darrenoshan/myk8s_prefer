@@ -1,0 +1,17 @@
+frontend kube-apiserver
+  bind 0.0.0.0:6443
+  mode tcp
+  default_backend kube-masters
+  timeout client 60s
+  timeout connect 5s
+  timeout server 60s
+
+backend kube-masters
+  mode tcp
+  balance roundrobin
+{% for host in groups['kube_control_plane'] %}
+  server {{ host }} {{ hostvars[host].access_ip }}:6443 check
+{% endfor %}
+  timeout connect 5s
+  timeout server 60s
+  timeout client 60s

@@ -1,0 +1,5 @@
+metrics_server_enabled: true
+metrics_server_kubelet_insecure_tls: false
+metrics_server_kubelet_preferred_address_types:
+  - InternalIP
+  - Hostname
